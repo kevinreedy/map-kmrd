@@ -9,21 +9,21 @@
 </div>
 
 <script>
-handler = Gmaps.build('Google');
-handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
-  markers = handler.addMarkers([
-    {
-      "lat": 0,
-      "lng": 0,
-      "picture": {
-        "url": "http://people.mozilla.com/~faaborg/files/shiretoko/firefoxIcon/firefox-32.png",
-        "width":  32,
-        "height": 32
-      },
-      "infowindow": "hello!"
-    }
-  ]);
-  handler.bounds.extendWith(markers);
-  handler.fitMapToBounds();
+  handler = Gmaps.build('Google');
+  handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
+    var polygons = handler.addPolygons(
+      [
+        [
+          {lat:  48, lng: -3.5}, { lat: 51, lng: -0.5},
+          {lat:  48, lng:  2.5}, { lat: 51, lng:  5.5},
+          {lat:  48, lng:  8.5}, { lat: 42, lng:  2.5},
+        ]
+      ],
+      { strokeColor: '#FF0000'}
+    );
+
+    handler.bounds.extendWith(polygons);
+
+    handler.fitMapToBounds();
   });
 </script>
