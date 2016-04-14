@@ -13,6 +13,7 @@
 <script>
   var stops = [];
   var yellow_poly = [];
+  var green_poly = [];
 
   $(document).ready(function() {
     $.ajax({
@@ -34,7 +35,7 @@
     for (var i = 0; i < stops.length; i++) {
       var stop = stops[i];
 
-      if (stop.include == "FALSE") {
+      if (stop.include == 'FALSE') {
         continue;
       }
 
@@ -43,19 +44,48 @@
       lng = parseFloat(latlng[1]);
 
       yellow_poly.push([
-        { lat: lat + (mile_lat * 0.5), lng: lng },
-        { lat: lat, lng: lng + (mile_lng * 0.5) },
-        { lat: lat - (mile_lat * 0.5), lng: lng },
-        { lat: lat, lng: lng - (mile_lng * 0.5) },
+        { lat: lat + (mile_lat * 0.6), lng: lng },
+        { lat: lat, lng: lng + (mile_lng * 0.6) },
+        { lat: lat - (mile_lat * 0.6), lng: lng },
+        { lat: lat, lng: lng - (mile_lng * 0.6) },
       ]);
+
+      if (stop.prefer == 'TRUE') {
+        green_poly.push([
+          { lat: lat + (mile_lat * 0.3), lng: lng },
+          { lat: lat, lng: lng + (mile_lng * 0.3) },
+          { lat: lat - (mile_lat * 0.3), lng: lng },
+          { lat: lat, lng: lng - (mile_lng * 0.3) },
+        ]);
+      }
     }
 
     handler = Gmaps.build('Google');
-    console.log('b');
     handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
-      var polygons = handler.addPolygons(yellow_poly, { strokeColor: '#FF0000'});
+      var yellow = handler.addPolygons(
+        yellow_poly,
+        {
+          strokeColor: '#000000',
+          strokeOpacity: 0.0,
+          strokeWeight: 1,
+          fillColor: '#FFCC33',
+          fillOpacity: 0.33
+        }
+      );
 
-      handler.bounds.extendWith(polygons);
+      var green = handler.addPolygons(
+        green_poly,
+        {
+          strokeColor: '#000000',
+          strokeOpacity: 0.0,
+          strokeWeight: 1,
+          fillColor: '#00FF00',
+          fillOpacity: 0.33
+        }
+      );
+
+      handler.bounds.extendWith(yellow);
+      handler.bounds.extendWith(green);
 
       handler.fitMapToBounds();
     });
